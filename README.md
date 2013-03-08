@@ -1,4 +1,6 @@
 #Open Registry
+ss:wa
+
 
 
 ##What is OpenRegistry?
