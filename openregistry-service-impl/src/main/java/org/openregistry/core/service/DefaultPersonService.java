@@ -804,8 +804,14 @@ public class DefaultPersonService implements PersonService {
             }//all other exception should be propogated
 
         }
-        
-        person.setDateOfBirth(birthDate);
+
+        // JIRA-1043 to prevent ODB get wiped out
+        if (birthDate != null) {
+            person.setDateOfBirth(birthDate);
+            logger.info("birthday = " + birthDate);
+        } else {
+            logger.info("Ignore empty DOB. Don't wipe out/over-write the existing DOB.");
+        }
         person.setGender(gender);
         person.getPreferredContactEmailAddress().update(emailAddress);
         person.getPreferredContactPhoneNumber().update(phone);
