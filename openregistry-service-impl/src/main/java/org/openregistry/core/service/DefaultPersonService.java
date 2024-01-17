@@ -1058,7 +1058,7 @@ public class DefaultPersonService implements PersonService {
     public boolean addOrUpdateChosenName(Person person, SorPerson sorPerson,
                                             String chosenName){
 
-        logger.info("Preferred Name: " + chosenName);
+        logger.info("Chosen Name: " + chosenName);
         // Update SorPerson
         boolean sorHasChosenName = false;
         SorName newChosenSorName = null;
@@ -1086,8 +1086,8 @@ public class DefaultPersonService implements PersonService {
             logger.info("The SOR person does not have Chosen name: add it");
             newChosenSorName = sorPerson.addName(referenceRepository.findType(Type.DataTypes.NAME, Type.NameTypes.CHOSEN));
             newChosenSorName.setGiven(chosenName);
-            newChosenSorName.setMiddle(middleName);
-            newChosenSorName.setFamily(lastName);
+            //newChosenSorName.setMiddle(middleName);
+            //newChosenSorName.setFamily(lastName);
         }
 
         try {
@@ -1117,9 +1117,9 @@ public class DefaultPersonService implements PersonService {
         JpaNameImpl existingChosenName = (JpaNameImpl)person.getChosenName();
         if (existingChosenName != null) { // update
             logger.info("The Person already has Chosen name: update it");
-            existingChosenName.setFamily(newChosenSorName.getFamily());
+            //existingChosenName.setFamily(newChosenSorName.getFamily());
             existingChosenName.setGiven(newChosenSorName.getGiven());
-            existingChosenName.setMiddle(newChosenSorName.getMiddle());
+            //existingChosenName.setMiddle(newChosenSorName.getMiddle());
             existingChosenName.setSourceNameId(newChosenSorName.getId());
         } else { // add new
             logger.info("The Person does not have Chosen name: Add it");
