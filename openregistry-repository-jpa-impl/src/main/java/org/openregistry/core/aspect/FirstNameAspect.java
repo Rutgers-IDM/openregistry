@@ -19,6 +19,7 @@
 
 package org.openregistry.core.aspect;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -34,6 +35,8 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public final class FirstNameAspect extends AbstractNameAspect {
 
+    final char[] delimiters = {' ', '-', '\'', '.'};
+
     @Around("set(@org.openregistry.core.domain.normalization.FirstName * *)")
     public Object transformFieldValue(final ProceedingJoinPoint joinPoint) throws Throwable {
         final String value = (String) joinPoint.getArgs()[0];
@@ -48,7 +51,12 @@ public final class FirstNameAspect extends AbstractNameAspect {
             return joinPoint.proceed(new Object[] {overrideValue});
         }
 
-        return joinPoint.proceed(new Object[] {WordUtils.capitalizeFully(value)});
+        //return joinPoint.proceed(new Object[] {WordUtils.capitalizeFully(value)});
+        if (StringUtils.containsAny(value,delimiters)) {
+            return joinPoint.proceed(new Object[] {WordUtils.capitalizeFully(value, delimiters )});
+        } else {
+            return joinPoint.proceed(new Object[] {WordUtils.capitalizeFully(value)});
+        }
     }
 }
 
