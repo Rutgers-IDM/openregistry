@@ -24,6 +24,8 @@ import org.apache.commons.lang.WordUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Changes the first name to confirm to particular cases when capitalization is set to normal.  If its set to UPPER or
@@ -35,12 +37,14 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public final class FirstNameAspect extends AbstractNameAspect {
 
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
     final char[] delimiters = {' ', '-', '\'', '.'};
 
     @Around("set(@org.openregistry.core.domain.normalization.FirstName * *)")
     public Object transformFieldValue(final ProceedingJoinPoint joinPoint) throws Throwable {
         final String value = (String) joinPoint.getArgs()[0];
 
+        logger.info("Entering FirstNameAspect.transformFieldValue ...");
         if (isDisabled() || value == null || value.isEmpty()) {
             return joinPoint.proceed();
         }
@@ -51,8 +55,10 @@ public final class FirstNameAspect extends AbstractNameAspect {
             return joinPoint.proceed(new Object[] {overrideValue});
         }
 
+        logger.info("after calling overrideValue ...");
         //return joinPoint.proceed(new Object[] {WordUtils.capitalizeFully(value)});
         if (StringUtils.containsAny(value,delimiters)) {
+            logger.info("Has special character  ...");
             return joinPoint.proceed(new Object[] {WordUtils.capitalizeFully(value, delimiters )});
         } else {
             return joinPoint.proceed(new Object[] {WordUtils.capitalizeFully(value)});
